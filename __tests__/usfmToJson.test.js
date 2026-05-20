@@ -132,6 +132,10 @@ describe("USFM to JSON", () => {
     generateTest('psa_140_8.qs_space_selah');
   });
 
+  it('process PSA Selah Inline', () => {
+    generateTest('psa_140_8.qs_selah_inline');
+  });
+
   it('process ISA verse span', () => {
     generateTest('isa_verse_span');
   });
