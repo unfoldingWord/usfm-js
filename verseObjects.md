@@ -32,9 +32,8 @@ These fields can be present on most verse objects.
 **Word-object fields (type: `"word"`, tag: `"w"`)**
 
 - **USFM source example:** \w और|x-occurrence="1" x-occurrences="1"\w*
-
-- Text of the word is between the `\w` and the `|` (`और`) in the example.
-- Attributes are fields between the `|` and the `\w*` (occurrence, occurrences) in the example.
+  - Text of the word is between the `\w` and the `|` (`और`) in the example.
+  - Attributes are fields between the `|` and the `\w*` (occurrence, occurrences) in the example.
 
 | Field | USFM attribute(s)                    | Notes                                                             |
 |-------|--------------------------------------|-------------------------------------------------------------------|
@@ -52,8 +51,9 @@ These fields can be present on most verse objects.
 
 **`\zaln` / `\k` milestone attribute fields (type: `"milestone"`)**
 
-- **example:** `\zaln-s |x-content="καὶ" x-lemma="καί" x-morph="Gr,CC,,,,,,,," x-occurrence="1" x-occurrences="1" x-strong="G25320"\*`
-- Attributes are fields between the `|` and the `\\*` in the example (x-contents, x-lemma,...).
+- **USFM source example:** `\zaln-s |x-content="καὶ" x-lemma="καί" x-morph="Gr,CC,,,,,,,," x-occurrence="1" x-occurrences="1" x-strong="G25320"\*`
+  - Attributes are fields between the `|` and the `\\*` in the example (x-contents, x-lemma,...).
+  - content in alignment is in `children`
 
 | Field        | USFM attribute | Notes |
 |--------------|----------------|-------|
