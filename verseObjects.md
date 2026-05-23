@@ -1,29 +1,37 @@
+# Verse Objects
 
-**Core (present on most objects)**
+This document describes the common fields used by verse objects produced while parsing USFM.
 
-| Field | Description |
-|-------|-------------|
-| `type` | `"text"` \| `"word"` \| `"milestone"` \| paragraph/note type from `USFM_PROPERTIES` |
-| `tag` | USFM marker name (e.g. `"w"`, `"zaln"`, `"p"`, `"f"`) |
+## Core fields
 
-**Content**
+These fields can be present on most verse objects.
 
 | Field | Description |
 |-------|-------------|
-| `text` | Display text — set on displayable markers (`isText = true`) |
-| `content` | Raw content — set on non-displayable markers (footnotes, cross-refs, etc.) |
-| `number` | Marker number (e.g. verse `"1"`, chapter `"3"`) — deleted if marker doesn't support numbers |
+| `type` | Object type. Common values include `"text"`, `"word"`, `"milestone"`, or a paragraph/note type from `USFM_PROPERTIES`. |
+| `tag` | USFM marker name, such as `"w"`, `"zaln"`, `"p"`, or `"f"`. |
 
-**Whitespace**
+## Content fields
 
 | Field | Description |
 |-------|-------------|
-| `nextChar` | The character immediately following the marker — `" "` or `"\n"` |
-| `endMarkerChar` | Captures space after milestone end marker` |
+| `text` | Display text. Set on displayable markers   |
+| `content` | Raw content. Set on normally not ddisplayed markers such as footnotes, cross-references, and milestone source content. |
+| `children` | Array of child verseObjects that are contained within this object |
+
+
+## Whitespace fields
+
+| Field | Description |
+|-------|-------------|
+| `nextChar` | Character immediately following the marker, usually `" "` or `"\n"`. |
+| `endMarkerChar` | Character captured after a milestone end marker, usually whitespace. |
+
+## Word objects
 
 **Word-object fields (type: `"word"`, tag: `"w"`)**
 
-- **example:** \w और|x-occurrence="1" x-occurrences="1"\w*
+- **USFM source example:** \w और|x-occurrence="1" x-occurrences="1"\w*
 
 - Text of the word is between the `\w` and the `|` (`और`) in the example.
 - Attributes are fields between the `|` and the `\w*` (occurrence, occurrences) in the example.
@@ -40,6 +48,8 @@
 | `x-srcloc` | `x-srcloc`                           | Source of word (e.g. `"gnt5:51.1.2.1"`)                           |
 | *(any other attr)* | `<key>`                            | any other added attrib                                            |
 
+## Alignment objects (`zaln`)
+
 **`\zaln` / `\k` milestone attribute fields (type: `"milestone"`)**
 
 - **example:** `\zaln-s |x-content="καὶ" x-lemma="καί" x-morph="Gr,CC,,,,,,,," x-occurrence="1" x-occurrences="1" x-strong="G25320"\*`
@@ -54,20 +64,3 @@
 | `occurrences` | `x-occurrences`                      | total number of exact occurrences for word in verse               |
 | `content`    | `x-content` | Source-language word; `x-` stripped |
 
-**Milestone / Span objects (other tags: `\qt-s`, `\xt`, etc.)**
-
-| Field | Description                                                       |
-|-------|-------------------------------------------------------------------|
-| `children` | Array of child verseObjects that are contained within this object |
-| `endTag` | End marker string — set when span closes                          |
-| `attrib` | Raw `\|attr="val"...` string from `startSpan` attribute parsing   |
-
-**Internal fields in `usfmToJson.js` (set during parsing, deleted before final output in normal flow)**
-
-| Field | Lifecycle |
-|-------|-----------|
-| `usfm3Milestone` | Set to true on USFM3 milestone open; deleted by `decrementPhraseNesting` / `terminatePhrases` |
-| `nesting` | Incremented/decremented for nested same-type spans; deleted when it reaches `0` |
-| `endMarkerChar` | Captures space after milestone end marker; consumed by `endSpan` |
-| `open` | Set by `parseLine`; always deleted by `createUsfmObject` |
-| `close` | Set by `parseLine`; always deleted by `createUsfmObject` |
