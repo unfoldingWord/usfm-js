@@ -19,6 +19,7 @@
 | Field | Description |
 |-------|-------------|
 | `nextChar` | The character immediately following the marker — `" "` or `"\n"` |
+| `endMarkerChar` | Captures space after milestone end marker` |
 
 **Word-object fields (type: `"word"`, tag: `"w"`)**
 
@@ -26,19 +27,6 @@
 
 - Text of the word is between the `\w` and the `|` (`और`) in the example.
 - Attributes are fields between the `|` and the `\w*` (occurrence, occurrences) in the example.
-
-
-        {
-            "content": "καὶ",
-            "endTag": "zaln-e\\*",
-            "lemma": "καί",
-            "morph": "Gr,CC,,,,,,,,",
-            "occurrence": "1",
-            "occurrences": "1",
-            "strong": "G25320",
-            "tag": "zaln",
-            "type": "milestone"
-          },
 
 | Field | USFM attribute(s)                    | Notes                                                             |
 |-------|--------------------------------------|-------------------------------------------------------------------|
@@ -55,36 +43,31 @@
 **`\zaln` / `\k` milestone attribute fields (type: `"milestone"`)**
 
 - **example:** `\zaln-s |x-content="καὶ" x-lemma="καί" x-morph="Gr,CC,,,,,,,," x-occurrence="1" x-occurrences="1" x-strong="G25320"\*`
-- Attributes are fields between the `|` and the `\\*` in the example.
+- Attributes are fields between the `|` and the `\\*` in the example (x-contents, x-lemma,...).
 
-| Field | USFM attribute | Notes |
-|-------|----------------|-------|
-| `strong` | `strong`, `strongs`, `x-strong`      | Strongs number of original language word (e.g. "G25320")          |
-| `lemma` | `x-lemma`                            | Lemma for original language word (e.g. "καί")                     |
-| `morph` | `x-morph`                            | morphology for original language word (e.g. "Gr,CC,,,,,,,,")      |
+| Field        | USFM attribute | Notes |
+|--------------|----------------|-------|
+| `strong`     | `strong`, `strongs`, `x-strong`      | Strongs number of original language word (e.g. "G25320")          |
+| `lemma`      | `x-lemma`                            | Lemma for original language word (e.g. "καί")                     |
+| `morph`      | `x-morph`                            | morphology for original language word (e.g. "Gr,CC,,,,,,,,")      |
 | `occurrence` | `x-occurrence`                       | occurrence number for word in verse                               |
 | `occurrences` | `x-occurrences`                      | total number of exact occurrences for word in verse               |
- `content` | `x-content` | Source-language word; `x-` stripped |
-| `children` | — | Array of child verseObjects (span content) |
-| `endTag` | — | Set on close: `"zaln-e\\*"` or `"k-e\\*"` |
+| `content`    | `x-content` | Source-language word; `x-` stripped |
 
-Milestone / Span objects (other tags: `\qt-s`, `\xt`, etc.)
+**Milestone / Span objects (other tags: `\qt-s`, `\xt`, etc.)**
 
-The `attrib` field applies to non-word, non-zaln/k span markers that go through
-`startSpan()`. The `|`-delimited attribute string is stored raw rather than expanded.
+| Field | Description                                                       |
+|-------|-------------------------------------------------------------------|
+| `children` | Array of child verseObjects that are contained within this object |
+| `endTag` | End marker string — set when span closes                          |
+| `attrib` | Raw `\|attr="val"...` string from `startSpan` attribute parsing   |
 
-| Field | Description |
-|-------|-------------|
-| `children` | Array of child verseObjects (displayable spans only) |
-| `endTag` | End marker string — set when span closes |
-| `attrib` | Raw `\|attr="val"...` string from `startSpan` attribute parsing |
-
-Internal fields (set during parsing, deleted before final output in normal flow)
+**Internal fields in `usfmToJson.js` (set during parsing, deleted before final output in normal flow)**
 
 | Field | Lifecycle |
 |-------|-----------|
 | `usfm3Milestone` | Set to true on USFM3 milestone open; deleted by `decrementPhraseNesting` / `terminatePhrases` |
 | `nesting` | Incremented/decremented for nested same-type spans; deleted when it reaches `0` |
-| `endMarkerChar` | Captures space after milestone end marker; consumed by `endSpan`, not cleaned up — can leak into saved objects in edge cases |
+| `endMarkerChar` | Captures space after milestone end marker; consumed by `endSpan` |
 | `open` | Set by `parseLine`; always deleted by `createUsfmObject` |
 | `close` | Set by `parseLine`; always deleted by `createUsfmObject` |
