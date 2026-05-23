@@ -611,7 +611,11 @@ const checkForEndMarker = marker => {
       if (content) {
         marker.endMarkerChar = space;
       } else {
-        content = space;
+        if (!marker.endMarkerChar) {
+          marker.endMarkerChar = space;
+        } else {
+          content = space;
+        }
       }
     }
     marker.content = content;
